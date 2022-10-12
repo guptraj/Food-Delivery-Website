@@ -1,13 +1,31 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { MdShoppingBasket } from "react-icons/md";
 import NotFound from "./img/NotFound.svg";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
 
 const RowContainer = ({ flag, data,scrollValue }) =>
 {
   const rowContainer = useRef();
+
+  const [items, setItems] = useState([]);
+
+  const [{ cartItems }, dispatch] = useStateValue();
+
+  const addtocart = () => {
+    dispatch({
+      type: actionType.SET_CARTITEMS,
+      cartItems: items,
+    });
+    localStorage.setItem("cartItems", JSON.stringify(items));
+  };
   
   useEffect(() => { rowContainer.current.scrollLeft += scrollValue }, [scrollValue]);
+
+  useEffect(() => {
+    addtocart();
+  }, [items]);
 
   return (
     <div
@@ -22,7 +40,7 @@ const RowContainer = ({ flag, data,scrollValue }) =>
         data.map((item) => (
           <div
             key={item?.id}
-            className="w-275 h-[175px] min-w-[275px] md:w-300 md:min-w-[300px]  bg-cardOverlay rounded-lg py-2 px-4  my-12 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-center justify-evenly relative"
+            className="w-275 h-[195px] min-w-[275px] md:w-300 md:min-w-[300px]  bg-cardOverlay rounded-lg py-2 px-4  my-12 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-center justify-evenly relative"
           >
             <div className="w-full flex items-center justify-between">
               <motion.div
@@ -38,12 +56,13 @@ const RowContainer = ({ flag, data,scrollValue }) =>
               <motion.div
                 whileTap={{ scale: 0.75 }}
                 className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md -mt-8"
+                onClick={() => setItems([...cartItems, item])}
               >
                 <MdShoppingBasket className="text-white" />
               </motion.div>
             </div>
 
-            <div className="w-full flex flex-col items-end justify-end -mt-8">
+            <div className="w-full flex flex-col items-end justify-end -mt-4">
               <p className="text-textColor font-semibold text-base md:text-lg">
                 {item?.title}
               </p>

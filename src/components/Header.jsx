@@ -6,7 +6,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { app } from "../firebase.config";
 
 import avatar from "./img/avatar.png";
-import Logo from "./img/logo.png";
+import Logo from "./img/logox.jpg";
 import { Link } from "react-router-dom";
 import { useStateValue } from "../context/StateProvider";
 import { actionType } from "../context/reducer";
@@ -15,7 +15,7 @@ const Header = () => {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
 
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, cartShow, cartItems}, dispatch] = useStateValue();
 
   const [isMenu, setIsMenu] = useState(false);
 
@@ -46,6 +46,13 @@ const Header = () => {
     });
   };
 
+  const showCart = () => {
+    dispatch({
+      type: actionType.SET_CART_SHOW,
+      cartShow: !cartShow,
+    });
+  };
+
   return (
     <header className="fixed z-50 w-screen p-3 px-4 md:p-6 md:px-16 bg-primary">
       {/* desktop and tablet */}
@@ -53,7 +60,7 @@ const Header = () => {
       <div className="hidden md:flex w-full h-full items-center justify-between ">
         {/* for logo */}
         <Link to={"/"} className="flex items-center gap-2">
-          <img src={Logo} className="w-8 object-cover" alt="logo" />
+          <img src={Logo} className="w-12 object-cover" alt="logo" />
           <p className="text-headingColor text-xl font-bold"> City</p>
         </Link>
 
@@ -66,7 +73,7 @@ const Header = () => {
             className="flex item-center gap-8"
           >
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
-              Home
+              <Link to={"/"}>Home</Link>
             </li>
 
             <li className="text-lg text-textColor hover:text-headingColor duration-100 transition-all ease-in-out cursor-pointer">
@@ -83,11 +90,18 @@ const Header = () => {
           </motion.ul>
 
           {/* for basket logo */}
-          <div className="relative flex items-center justify-center">
+          <div
+            className="relative flex items-center justify-center"
+            onClick={showCart}
+          >
             <MdShoppingBasket className="text-textColor text-2xl cursor-pointer" />
-            <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
-              <p className="text-xs text-white font-semibold">2</p>
-            </div>
+            {cartItems && cartItems.length > 0 && (
+              <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
+                <p className="text-xs text-white font-semibold">
+                  {cartItems.length}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* for avatar image */}
@@ -122,7 +136,6 @@ const Header = () => {
                   className="m-2 px-4 py-2 rounded-md shadow-md  flex items-center justify-center bg-gray-200 gap-3 cursor-pointer hover:bg-slate-100 transition-all duration-100 ease-in-out text-textColor text-base"
                   onClick={logout}
                 >
-                  {/* m-2 p-2 rounded-md shadow-md flex items-center justify-center bg-gray-200 gap-3 cursor-pointer hover:bg-gray-300 transition-all duration-100 ease-in-out text-textColor text-base */}
                   Logout <MdLogout />
                 </p>
               </motion.div>
@@ -134,11 +147,18 @@ const Header = () => {
       {/* mobile */}
       <div className="flex items-center justify-between md:hidden w-full h-full">
         {/* basket logo */}
-        <div className="relative flex items-center justify-center">
+        <div
+          className="relative flex items-center justify-center"
+          onClick={showCart}
+        >
           <MdShoppingBasket className="text-textColor text-2xl  cursor-pointer" />
-          <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
-            <p className="text-xs text-white font-semibold">2</p>
-          </div>
+          {cartItems && cartItems.length > 0 && (
+            <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
+              <p className="text-xs text-white font-semibold">
+                {cartItems.length}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* logo */}
