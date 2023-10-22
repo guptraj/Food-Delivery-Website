@@ -11,9 +11,14 @@ const MainContainer = () => {
 
   const [{ foodItems,cartShow}, dispatch] = useStateValue();
   const [scrollValue, setScrollValue] = useState(0);
-
+  
   useEffect(() => {}, [scrollValue, cartShow]);
-
+  const handleScrollLeft = () => {
+    setScrollValue(scrollValue - 200);
+  };
+  const handleScrollRight = () => {
+    setScrollValue(scrollValue + 200);
+  };
   return (
     <div className="w-full h-auto flex flex-col items-center justify-center ">
       <HomeContainer />
@@ -28,7 +33,7 @@ const MainContainer = () => {
             <motion.div
               whileTap={{ scale: 0.75 }}
               className="w-8 h-8 rounded-lg bg-orange-300 hover:bg-orange-500 cursor-pointer  hover:shadow-lg flex items-center justify-center"
-              onClick={() => setScrollValue(-200)}
+              onClick={handleScrollLeft}
             >
               <MdChevronLeft className="text-lg text-white" />
             </motion.div>
@@ -36,7 +41,7 @@ const MainContainer = () => {
             <motion.div
               whileTap={{ scale: 0.75 }}
               className="w-8 h-8 rounded-lg bg-orange-300 hover:bg-orange-500 cursor-pointer  hover:shadow-lg flex items-center justify-center"
-              onClick={() => setScrollValue(200)}
+              onClick={handleScrollRight}
             >
               <MdChevronRight className="text-lg text-white" />
             </motion.div>
